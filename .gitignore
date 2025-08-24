@@ -9,9 +9,11 @@ node_modules/
 
 # Build artifacts
 *.js.map
-*.js
 *.web.js
 *.bundle
+
+# Allow specific JS files
+!App.js
 
 # Other
 .DS_Store
