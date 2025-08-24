@@ -6,8 +6,23 @@ import { theme } from '../lib/theme';
 import { playlists } from '../lib/data';
 
 export const Explore = () => {
+  const handlePlaylistPress = (playlist) => {
+    console.log('Playlist pressed:', playlist.title);
+    // Add playlist navigation logic here
+  };
+
+  const handleCategoryPress = (category) => {
+    console.log('Category pressed:', category);
+    // Add category filter logic here
+  };
+
   const renderPlaylistCard = (playlist) => (
-    <TouchableOpacity key={playlist.id} style={styles.playlistCard}>
+    <TouchableOpacity 
+      key={playlist.id} 
+      style={styles.playlistCard}
+      onPress={() => handlePlaylistPress(playlist)}
+      activeOpacity={0.8}
+    >
       <LinearGradient
         colors={playlist.gradient}
         style={styles.playlistGradient}
@@ -40,7 +55,12 @@ export const Explore = () => {
         <Text style={styles.sectionTitle}>कैटेगरी</Text>
         <View style={styles.categoriesContainer}>
           {['फोकस', 'फिटनेस', 'पढ़ाई', 'सुबह', 'आत्मविश्वास', 'आध्यात्म', 'प्रेरणा'].map((category) => (
-            <TouchableOpacity key={category} style={styles.categoryChip}>
+            <TouchableOpacity 
+              key={category} 
+              style={styles.categoryChip}
+              onPress={() => handleCategoryPress(category)}
+              activeOpacity={0.7}
+            >
               <Text style={styles.categoryText}>{category}</Text>
             </TouchableOpacity>
           ))}
