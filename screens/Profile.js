@@ -9,11 +9,11 @@ export const Profile = () => {
   const stats = getUserStats();
 
   const menuItems = [
-    { icon: 'settings-outline', title: 'Settings', subtitle: 'Customize your experience' },
-    { icon: 'notifications-outline', title: 'Notifications', subtitle: 'Manage your alerts' },
-    { icon: 'download-outline', title: 'Downloads', subtitle: 'Offline content' },
-    { icon: 'help-circle-outline', title: 'Help & Support', subtitle: 'Get assistance' },
-    { icon: 'information-circle-outline', title: 'About', subtitle: 'App information' },
+    { icon: 'settings-outline', title: 'सेटिंग्स', subtitle: 'अपने अनुभव को कस्टमाइज़ करें' },
+    { icon: 'notifications-outline', title: 'नोटिफिकेशन', subtitle: 'अपने अलर्ट मैनेज करें' },
+    { icon: 'download-outline', title: 'डाउनलोड', subtitle: 'ऑफ़लाइन कंटेंट' },
+    { icon: 'help-circle-outline', title: 'हेल्प और सपोर्ट', subtitle: 'सहायता प्राप्त करें' },
+    { icon: 'information-circle-outline', title: 'ऐप के बारे में', subtitle: 'ऐप की जानकारी' },
   ];
 
   return (
@@ -26,32 +26,32 @@ export const Profile = () => {
           <View style={styles.avatar}>
             <Ionicons name="person" size={40} color="white" />
           </View>
-          <Text style={styles.name}>John Doe</Text>
-          <Text style={styles.email}>john.doe@example.com</Text>
+          <Text style={styles.name}>राहुल शर्मा</Text>
+          <Text style={styles.email}>rahul.sharma@example.com</Text>
         </View>
       </LinearGradient>
 
       <View style={styles.content}>
         <View style={styles.statsCard}>
-          <Text style={styles.statsTitle}>Your Progress</Text>
+          <Text style={styles.statsTitle}>आपकी प्रगति</Text>
           <View style={styles.statsGrid}>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>{stats.streak}</Text>
-              <Text style={styles.statLabel}>Day Streak</Text>
+              <Text style={styles.statLabel}>दिन की लगातारता</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>{stats.totalBoosts}</Text>
-              <Text style={styles.statLabel}>Total Boosts</Text>
+              <Text style={styles.statLabel}>कुल बूस्ट</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>{Math.floor(stats.totalMinutes / 60)}h</Text>
-              <Text style={styles.statLabel}>Time Listened</Text>
+              <Text style={styles.statLabel}>सुने का समय</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>
                 {new Date(stats.joinDate).getFullYear()}
               </Text>
-              <Text style={styles.statLabel}>Member Since</Text>
+              <Text style={styles.statLabel}>सदस्य बने</Text>
             </View>
           </View>
         </View>
@@ -81,7 +81,7 @@ export const Profile = () => {
 
         <TouchableOpacity style={styles.signOutButton}>
           <Ionicons name="log-out-outline" size={20} color={theme.colors.error} />
-          <Text style={styles.signOutText}>Sign Out</Text>
+          <Text style={styles.signOutText}>साइन आउट</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
