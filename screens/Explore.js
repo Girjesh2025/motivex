@@ -17,7 +17,7 @@ export const Explore = () => {
           <Text style={styles.playlistTitle}>{playlist.title}</Text>
           <Text style={styles.playlistDescription}>{playlist.description}</Text>
           <Text style={styles.playlistCount}>
-            {playlist.boosts.length} boosts
+            {playlist.boosts.length} बूस्ट
           </Text>
         </View>
       </LinearGradient>
@@ -27,19 +27,19 @@ export const Explore = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Explore</Text>
-        <Text style={styles.headerSubtitle}>Discover new motivation playlists</Text>
+        <Text style={styles.headerTitle}>एक्सप्लोर करें</Text>
+        <Text style={styles.headerSubtitle}>नई मोटिवेशन प्लेलिस्ट खोजें</Text>
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.sectionTitle}>Featured Playlists</Text>
+        <Text style={styles.sectionTitle}>फीचर्ड प्लेलिस्ट</Text>
         <View style={styles.playlistGrid}>
           {playlists.map(renderPlaylistCard)}
         </View>
 
-        <Text style={styles.sectionTitle}>Categories</Text>
+        <Text style={styles.sectionTitle}>कैटेगरी</Text>
         <View style={styles.categoriesContainer}>
-          {['Focus', 'Fitness', 'Study', 'Morning', 'Confidence'].map((category) => (
+          {['फोकस', 'फिटनेस', 'पढ़ाई', 'सुबह', 'आत्मविश्वास', 'आध्यात्म', 'प्रेरणा'].map((category) => (
             <TouchableOpacity key={category} style={styles.categoryChip}>
               <Text style={styles.categoryText}>{category}</Text>
             </TouchableOpacity>

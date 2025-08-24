@@ -10,6 +10,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Home } from './screens/Home';
 import { Explore } from './screens/Explore';
 import { Profile } from './screens/Profile';
+import { Achievements } from './screens/Achievements';
 
 // Components
 import { MiniPlayer } from './components/MiniPlayer';
@@ -38,6 +39,8 @@ const TabNavigator = ({ currentBoost, isPlaying, onPlayBoost }) => {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Explore') {
             iconName = focused ? 'compass' : 'compass-outline';
+          } else if (route.name === 'Achievements') {
+            iconName = focused ? 'trophy' : 'trophy-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
           }
@@ -54,6 +57,7 @@ const TabNavigator = ({ currentBoost, isPlaying, onPlayBoost }) => {
         {(props) => <Home {...props} currentBoost={currentBoost} isPlaying={isPlaying} onPlayBoost={onPlayBoost} />}
       </Tab.Screen>
       <Tab.Screen name="Explore" component={Explore} />
+      <Tab.Screen name="Achievements" component={Achievements} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
