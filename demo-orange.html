@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motivex - Daily Motivation App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 100%);
+            color: #2D3748;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 60px;
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .greeting-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .greeting {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2D3748;
+            margin-bottom: 8px;
+        }
+        
+        .greeting-subtitle {
+            color: #718096;
+            font-size: 16px;
+        }
+        
+        .daily-boost {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .boost-header {
+            background: linear-gradient(135deg, #FF6B35, #FF8E53);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .category {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+        
+        .quote {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+        
+        .author {
+            opacity: 0.9;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .play-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+        
+        .duration {
+            color: #718096;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .play-button {
+            background: linear-gradient(135deg, #FF6B35, #FF8E53);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .play-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+        
+        .play-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FF6B35, #FF8E53);
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2D3748;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            color: #718096;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .section {
+            margin: 30px 0;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+        }
+        
+        .playlist-grid {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .playlist-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .playlist-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .playlist-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #FF6B35, #FF8E53);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 20px;
+            color: white;
+        }
+        
+        .playlist-info {
+            flex: 1;
+        }
+        
+        .playlist-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2D3748;
+            margin-bottom: 4px;
+        }
+        
+        .playlist-info p {
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        .playlist-status {
+            color: #FF6B35;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 16px 20px 20px;
+            display: flex;
+            justify-content: space-around;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #718096;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active {
+            color: #FF6B35;
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item.active .nav-icon {
+            background: linear-gradient(135deg, #FF6B35, #FF8E53);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .demo-note {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 16px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-note h4 {
+            color: #FF6B35;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .demo-note p {
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        .feature-list {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-list h4 {
+            color: #2D3748;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        .feature-item::before {
+            content: "✓";
+            color: #48BB78;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Motivex</div>
+            <div class="subtitle">Your daily dose of motivation</div>
+        </div>
+        
+        <div class="demo-note">
+            <h4>🚀 React Native App Demo</h4>
+            <p>Orange-themed motivational app inspired by modern smart home design</p>
+        </div>
+        
+        <div class="greeting-card">
+            <div class="greeting">Hi Samuel! 👋</div>
+            <div class="greeting-subtitle">Ready for your daily boost?</div>
+        </div>
+        
+        <div class="daily-boost">
+            <div class="boost-header">
+                <div class="category">TODAY'S FOCUS</div>
+                <div class="quote">"The only way to do great work is to love what you do."</div>
+                <div class="author">— Steve Jobs</div>
+            </div>
+            <div class="play-section">
+                <div class="duration">45 seconds</div>
+                <button class="play-button" onclick="playDemo()">
+                    <div class="play-icon">▶</div>
+                    <span>Play Now</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">7</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">45</div>
+                <div class="stat-label">Total Boosts</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Categories</div>
+            <div class="playlist-grid">
+                <div class="playlist-card" onclick="showPlaylist('Focus')">
+                    <div class="playlist-icon">🎯</div>
+                    <div class="playlist-info">
+                        <h3>Deep Focus</h3>
+                        <p>12 motivational tracks</p>
+                    </div>
+                    <div class="playlist-status">Active</div>
+                </div>
+                <div class="playlist-card" onclick="showPlaylist('Gym')">
+                    <div class="playlist-icon">💪</div>
+                    <div class="playlist-info">
+                        <h3>Gym Beast</h3>
+                        <p>8 workout motivations</p>
+                    </div>
+                    <div class="playlist-status">Ready</div>
+                </div>
+                <div class="playlist-card" onclick="showPlaylist('Study')">
+                    <div class="playlist-icon">📚</div>
+                    <div class="playlist-info">
+                        <h3>Study Power</h3>
+                        <p>15 focus sessions</p>
+                    </div>
+                    <div class="playlist-status">New</div>
+                </div>
+                <div class="playlist-card" onclick="showPlaylist('Morning')">
+                    <div class="playlist-icon">☀️</div>
+                    <div class="playlist-info">
+                        <h3>Morning Ritual</h3>
+                        <p>6 morning boosts</p>
+                    </div>
+                    <div class="playlist-status">Popular</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feature-list">
+            <h4>🛠 Built with React Native</h4>
+            <div class="feature-item">TypeScript for type safety</div>
+            <div class="feature-item">Expo for rapid development</div>
+            <div class="feature-item">React Navigation</div>
+            <div class="feature-item">Linear gradients & animations</div>
+            <div class="feature-item">Modern orange design system</div>
+            <div class="feature-item">Card-based clean UI</div>
+        </div>
+        
+        <div style="height: 100px;"></div> <!-- Space for bottom nav -->
+    </div>
+    
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <div class="nav-icon">🏠</div>
+            <div>Home</div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">🧭</div>
+            <div>Explore</div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">👤</div>
+            <div>Profile</div>
+        </div>
+    </div>
+    
+    <script>
+        function playDemo() {
+            const button = document.querySelector('.play-button');
+            const icon = document.querySelector('.play-icon');
+            const text = button.querySelector('span');
+            
+            if (icon.textContent === '▶') {
+                icon.textContent = '⏸';
+                text.textContent = 'Playing...';
+                button.style.background = 'linear-gradient(135deg, #48BB78, #68D391)';
+                
+                // Simulate playing for 3 seconds then stop
+                setTimeout(() => {
+                    icon.textContent = '▶';
+                    text.textContent = 'Play Now';
+                    button.style.background = 'linear-gradient(135deg, #FF6B35, #FF8E53)';
+                }, 3000);
+            } else {
+                icon.textContent = '▶';
+                text.textContent = 'Play Now';
+                button.style.background = 'linear-gradient(135deg, #FF6B35, #FF8E53)';
+            }
+        }
+        
+        function showPlaylist(name) {
+            alert(`Opening ${name} playlist! 🎵\n\nThis would navigate to the ${name.toLowerCase()} category with all motivational content.`);
+        }
+        
+        // Add click handlers for nav items
+        document.querySelectorAll('.nav-item').forEach((item, index) => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                const screens = ['Home', 'Explore', 'Profile'];
+                alert(`Navigating to ${screens[index]} screen! 📱\n\nThis demonstrates the tab navigation in the React Native app.`);
+            });
+        });
+        
+        // Add subtle animations on load
+        window.addEventListener('load', () => {
+            const cards = document.querySelectorAll('.playlist-card, .stat-card, .daily-boost, .greeting-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

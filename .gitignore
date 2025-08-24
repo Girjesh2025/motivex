@@ -1,0 +1,17 @@
+# Node modules
+node_modules/
+
+# Expo
+.expo/
+
+# IDE
+.idea/
+
+# Build artifacts
+*.js.map
+*.js
+*.web.js
+*.bundle
+
+# Other
+.DS_Store

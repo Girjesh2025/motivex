@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motivex - Audio Enhanced</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 100%);
+            color: #2D3748; min-height: 100vh; overflow-x: hidden;
+        }
+        .container { max-width: 400px; margin: 0 auto; padding: 20px; min-height: 100vh; }
+        .header { text-align: center; margin-bottom: 30px; padding-top: 60px; }
+        .logo { font-size: 32px; font-weight: 700; color: white; margin-bottom: 8px; }
+        .subtitle { color: rgba(255, 255, 255, 0.9); font-size: 16px; font-weight: 500; }
+        
+        .greeting-card {
+            background: white; border-radius: 20px; padding: 24px; margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .greeting-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); }
+        .greeting { font-size: 24px; font-weight: 700; color: #2D3748; margin-bottom: 8px; }
+        .greeting-subtitle { color: #718096; font-size: 16px; }
+        
+        .daily-boost {
+            background: white; border-radius: 20px; padding: 24px; margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden;
+        }
+        .boost-header {
+            background: linear-gradient(135deg, #FF6B35, #FF8E53);
+            border-radius: 16px; padding: 20px; margin-bottom: 20px; color: white;
+        }
+        .category { font-size: 12px; font-weight: 600; letter-spacing: 1px; opacity: 0.9; margin-bottom: 12px; }
+        .quote { font-size: 18px; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
+        .author { opacity: 0.9; font-weight: 500; font-size: 14px; }
+        
+        .play-section { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+        .duration { color: #718096; font-size: 14px; font-weight: 500; }
+        .play-button {
+            background: linear-gradient(135deg, #FF6B35, #FF8E53); border: none; border-radius: 50px;
+            padding: 12px 24px; color: white; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        .play-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4); }
+        .play-button.playing { background: linear-gradient(135deg, #48BB78, #68D391); }
+        .play-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+        
+        .progress-bar {
+            width: 100%; height: 4px; background: #E2E8F0; border-radius: 2px;
+            margin-top: 12px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, #FF6B35, #FF8E53);
+            width: 0%; transition: width 0.3s ease;
+        }
+        
+        .voice-controls {
+            background: white; border-radius: 16px; padding: 20px; margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .voice-controls h3 {
+            font-size: 18px; font-weight: 600; color: #2D3748; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        
+        .voice-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        }
+        
+        .voice-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2); border: none;
+            border-radius: 12px; padding: 16px; color: white; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease; text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .voice-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); }
+        .voice-btn.speaking { background: linear-gradient(135deg, #48BB78, #68D391); }
+        
+        .expo-section {
+            background: white; border-radius: 20px; padding: 24px; margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .expo-header {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+        }
+        
+        .expo-logo {
+            width: 48px; height: 48px; background: #000; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 20px;
+        }
+        
+        .expo-title {
+            font-size: 20px; font-weight: 700; color: #2D3748;
+        }
+        
+        .expo-subtitle {
+            color: #718096; font-size: 14px;
+        }
+        
+        .qr-placeholder {
+            width: 200px; height: 200px; background: #F7FAFC; border: 2px dashed #CBD5E0;
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            margin: 16px auto; color: #718096; font-weight: 600; text-align: center;
+        }
+        
+        .expo-btn {
+            background: #000; color: white; border: none; border-radius: 12px;
+            padding: 12px 24px; font-weight: 600; cursor: pointer; width: 100%;
+            transition: all 0.3s ease; margin-top: 12px;
+        }
+        
+        .expo-btn:hover { background: #333; transform: translateY(-1px); }
+        
+        .features-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: white; border-radius: 16px; padding: 20px; text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); }
+        
+        .feature-icon { font-size: 32px; margin-bottom: 12px; }
+        .feature-title { font-size: 16px; font-weight: 600; color: #2D3748; margin-bottom: 8px; }
+        .feature-desc { font-size: 12px; color: #718096; }
+        
+        .notification {
+            position: fixed; top: 20px; right: 20px; background: white; border-radius: 12px;
+            padding: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transform: translateX(400px); transition: all 0.3s ease; z-index: 1001;
+        }
+        .notification.show { transform: translateX(0); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Motivex</div>
+            <div class="subtitle">Your daily dose of motivation</div>
+        </div>
+        
+        <div class="greeting-card" onclick="speak('Welcome back Samuel! Ready for your daily motivation boost?')">
+            <div class="greeting">Hi Samuel! 👋</div>
+            <div class="greeting-subtitle">Ready for your daily boost?</div>
+        </div>
+        
+        <div class="daily-boost">
+            <div class="boost-header">
+                <div class="category">TODAY'S FOCUS</div>
+                <div class="quote" id="current-quote">"The only way to do great work is to love what you do."</div>
+                <div class="author" id="current-author">— Steve Jobs</div>
+            </div>
+            <div class="play-section">
+                <div class="duration">45 seconds</div>
+                <button class="play-button" onclick="playQuoteWithVoice()" id="main-play-btn">
+                    <div class="play-icon">▶</div>
+                    <span>Play with Voice</span>
+                </button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <div class="voice-controls">
+            <h3>🎤 Voice Features</h3>
+            <div class="voice-grid">
+                <button class="voice-btn" onclick="speakMotivation()">
+                    🔥 Motivational Speech
+                </button>
+                <button class="voice-btn" onclick="speakAffirmations()">
+                    ✨ Daily Affirmations
+                </button>
+                <button class="voice-btn" onclick="speakFocus()">
+                    🎯 Focus Booster
+                </button>
+                <button class="voice-btn" onclick="speakSuccess()">
+                    🚀 Success Mindset
+                </button>
+            </div>
+        </div>
+        
+        <div class="expo-section">
+            <div class="expo-header">
+                <div class="expo-logo">E</div>
+                <div>
+                    <div class="expo-title">Test on Android</div>
+                    <div class="expo-subtitle">Scan QR code with Expo Go app</div>
+                </div>
+            </div>
+            <div class="qr-placeholder">
+                📱<br>QR Code will appear here<br>when Expo server starts
+            </div>
+            <button class="expo-btn" onclick="startExpoServer()">
+                🚀 Start Expo Development Server
+            </button>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card" onclick="showFeature('ai')">
+                <div class="feature-icon">🤖</div>
+                <div class="feature-title">AI Coach</div>
+                <div class="feature-desc">Personal motivation assistant</div>
+            </div>
+            <div class="feature-card" onclick="showFeature('habits')">
+                <div class="feature-icon">📈</div>
+                <div class="feature-title">Habit Tracker</div>
+                <div class="feature-desc">Build positive routines</div>
+            </div>
+            <div class="feature-card" onclick="showFeature('social')">
+                <div class="feature-icon">👥</div>
+                <div class="feature-title">Social Sharing</div>
+                <div class="feature-desc">Share your progress</div>
+            </div>
+            <div class="feature-card" onclick="showFeature('offline')">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Offline Mode</div>
+                <div class="feature-desc">Works without internet</div>
+            </div>
+        </div>
+        
+        <div style="height: 60px;"></div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #48BB78, #68D391); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px;">✓</div>
+            <div id="notification-text">Action completed!</div>
+        </div>
+    </div>
+    
+    <script>
+        const quotes = [
+            { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { quote: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+            { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+            { quote: "It is during our darkest moments that we must focus to see the light.", author: "Aristotle" },
+            { quote: "The only impossible journey is the one you never begin.", author: "Tony Robbins" }
+        ];
+        
+        let isPlaying = false;
+        let currentProgress = 0;
+        let speechSynthesis = window.speechSynthesis;
+        
+        function speak(text, rate = 1, pitch = 1) {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = rate;
+            utterance.pitch = pitch;
+            utterance.volume = 1;
+            
+            // Try to use a more natural voice
+            const voices = speechSynthesis.getVoices();
+            const preferredVoice = voices.find(voice => 
+                voice.name.includes('Samantha') || 
+                voice.name.includes('Alex') || 
+                voice.name.includes('Daniel') ||
+                voice.lang.includes('en-US')
+            );
+            if (preferredVoice) utterance.voice = preferredVoice;
+            
+            speechSynthesis.speak(utterance);
+            showNotification('🎤 Speaking...');
+        }
+        
+        function playQuoteWithVoice() {
+            const btn = document.getElementById('main-play-btn');
+            const icon = btn.querySelector('.play-icon');
+            const text = btn.querySelector('span');
+            const progressFill = document.getElementById('progress-fill');
+            const quote = document.getElementById('current-quote').textContent;
+            const author = document.getElementById('current-author').textContent;
+            
+            if (!isPlaying) {
+                isPlaying = true;
+                icon.textContent = '⏸';
+                text.textContent = 'Speaking...';
+                btn.classList.add('playing');
+                
+                // Speak the quote
+                speak(`${quote} ${author}`, 0.9, 1.1);
+                
+                // Simulate progress
+                const interval = setInterval(() => {
+                    currentProgress += 2.22;
+                    progressFill.style.width = currentProgress + '%';
+                    
+                    if (currentProgress >= 100) {
+                        clearInterval(interval);
+                        resetPlayer();
+                        showNotification('Daily boost completed! 🎉');
+                    }
+                }, 100);
+            } else {
+                speechSynthesis.cancel();
+                resetPlayer();
+            }
+        }
+        
+        function resetPlayer() {
+            isPlaying = false;
+            currentProgress = 0;
+            const btn = document.getElementById('main-play-btn');
+            const icon = btn.querySelector('.play-icon');
+            const text = btn.querySelector('span');
+            const progressFill = document.getElementById('progress-fill');
+            
+            icon.textContent = '▶';
+            text.textContent = 'Play with Voice';
+            btn.classList.remove('playing');
+            progressFill.style.width = '0%';
+        }
+        
+        function speakMotivation() {
+            const motivations = [
+                "You are stronger than you think. Every challenge you face is an opportunity to grow and become the person you're meant to be.",
+                "Success isn't about never falling down. It's about getting back up every single time with more determination than before.",
+                "Your dreams are valid. Your goals are achievable. The only thing standing between you and success is the action you take today."
+            ];
+            const random = motivations[Math.floor(Math.random() * motivations.length)];
+            speak(random, 0.8, 1.2);
+        }
+        
+        function speakAffirmations() {
+            const affirmations = [
+                "I am capable of achieving anything I set my mind to. I am worthy of success and happiness.",
+                "Every day I am becoming stronger, wiser, and more confident. I choose to focus on the positive.",
+                "I believe in myself and my abilities. I am creating the life I want through my thoughts and actions."
+            ];
+            const random = affirmations[Math.floor(Math.random() * affirmations.length)];
+            speak(random, 0.7, 1.1);
+        }
+        
+        function speakFocus() {
+            const focus = [
+                "Focus your mind like a laser beam. Eliminate distractions and channel all your energy into what matters most.",
+                "Deep focus is your superpower. When you concentrate fully, you can accomplish in hours what takes others days.",
+                "Clear your mind, set your intention, and dive deep into your work. This is where magic happens."
+            ];
+            const random = focus[Math.floor(Math.random() * focus.length)];
+            speak(random, 0.9, 1.0);
+        }
+        
+        function speakSuccess() {
+            const success = [
+                "Success is not a destination, it's a journey of continuous growth, learning, and pushing beyond your comfort zone.",
+                "Think like a winner, act like a champion, and success will follow. Your mindset determines your reality.",
+                "Success requires sacrifice, discipline, and unwavering commitment to your goals. You have what it takes."
+            ];
+            const random = success[Math.floor(Math.random() * success.length)];
+            speak(random, 0.8, 1.1);
+        }
+        
+        function startExpoServer() {
+            showNotification('🚀 Starting Expo development server...');
+            // This would trigger the actual Expo server start
+            setTimeout(() => {
+                document.querySelector('.qr-placeholder').innerHTML = `
+                    <div style="font-size: 14px; color: #48BB78;">
+                        ✅ Server Started!<br>
+                        📱 Open Expo Go app<br>
+                        🔗 exp://192.168.1.100:19000
+                    </div>
+                `;
+                showNotification('✅ Expo server ready! Scan QR with Expo Go app');
+            }, 2000);
+        }
+        
+        function showFeature(feature) {
+            const features = {
+                ai: '🤖 AI Coach will provide personalized motivation based on your goals and progress!',
+                habits: '📈 Track daily habits like exercise, meditation, reading, and build streaks!',
+                social: '👥 Share your favorite quotes and achievements with friends and family!',
+                offline: '📱 Download content for offline listening during commutes or workouts!'
+            };
+            showNotification(features[feature]);
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notification-text');
+            text.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+        
+        // Initialize voices
+        window.addEventListener('load', () => {
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = () => {};
+            }
+            showNotification('🎤 Voice features ready! Try the audio buttons');
+        });
+    </script>
+</body>
+</html>

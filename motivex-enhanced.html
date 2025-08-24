@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motivex - Enhanced Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 100%);
+            color: #2D3748; min-height: 100vh; overflow-x: hidden;
+        }
+        .container { max-width: 400px; margin: 0 auto; padding: 20px; min-height: 100vh; }
+        .header { text-align: center; margin-bottom: 30px; padding-top: 60px; }
+        .logo { font-size: 32px; font-weight: 700; color: white; margin-bottom: 8px; }
+        .subtitle { color: rgba(255, 255, 255, 0.9); font-size: 16px; font-weight: 500; }
+        
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        .greeting-card {
+            background: white; border-radius: 20px; padding: 24px; margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .greeting-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); }
+        .greeting { font-size: 24px; font-weight: 700; color: #2D3748; margin-bottom: 8px; }
+        .greeting-subtitle { color: #718096; font-size: 16px; }
+        
+        .daily-boost {
+            background: white; border-radius: 20px; padding: 24px; margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden;
+        }
+        .boost-header {
+            background: linear-gradient(135deg, #FF6B35, #FF8E53);
+            border-radius: 16px; padding: 20px; margin-bottom: 20px; color: white;
+        }
+        .category { font-size: 12px; font-weight: 600; letter-spacing: 1px; opacity: 0.9; margin-bottom: 12px; }
+        .quote { font-size: 18px; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
+        .author { opacity: 0.9; font-weight: 500; font-size: 14px; }
+        
+        .play-section { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+        .duration { color: #718096; font-size: 14px; font-weight: 500; }
+        .play-button {
+            background: linear-gradient(135deg, #FF6B35, #FF8E53); border: none; border-radius: 50px;
+            padding: 12px 24px; color: white; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        .play-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4); }
+        .play-button.playing { background: linear-gradient(135deg, #48BB78, #68D391); }
+        .play-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+        
+        .progress-bar {
+            width: 100%; height: 4px; background: #E2E8F0; border-radius: 2px;
+            margin-top: 12px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, #FF6B35, #FF8E53);
+            width: 0%; transition: width 0.3s ease;
+        }
+        
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+        .stat-card {
+            background: white; border-radius: 16px; padding: 20px; text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); }
+        .stat-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, #FF6B35, #FF8E53);
+        }
+        .stat-value { font-size: 28px; font-weight: 700; color: #2D3748; margin-bottom: 4px; }
+        .stat-label { color: #718096; font-weight: 500; font-size: 14px; }
+        
+        .section { margin: 30px 0; }
+        .section-title { font-size: 20px; font-weight: 700; color: white; margin-bottom: 16px; }
+        
+        .playlist-grid { display: grid; gap: 12px; }
+        .playlist-card {
+            background: white; border-radius: 16px; padding: 20px; display: flex; align-items: center;
+            transition: all 0.3s ease; cursor: pointer; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .playlist-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); }
+        .playlist-card.active { border: 2px solid #FF6B35; }
+        .playlist-icon {
+            width: 48px; height: 48px; background: linear-gradient(135deg, #FF6B35, #FF8E53);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            margin-right: 16px; font-size: 20px; color: white;
+        }
+        .playlist-info { flex: 1; }
+        .playlist-info h3 { font-size: 16px; font-weight: 600; color: #2D3748; margin-bottom: 4px; }
+        .playlist-info p { color: #718096; font-size: 14px; }
+        .playlist-status { color: #FF6B35; font-size: 12px; font-weight: 600; }
+        
+        .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+        .quick-action {
+            background: white; border-radius: 16px; padding: 16px; text-align: center;
+            cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .quick-action:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15); }
+        .quick-action-icon { font-size: 24px; margin-bottom: 8px; }
+        .quick-action-text { font-size: 14px; font-weight: 600; color: #2D3748; }
+        
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 400px; background: white; padding: 16px 20px 20px;
+            display: flex; justify-content: space-around; border-top-left-radius: 24px;
+            border-top-right-radius: 24px; box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; color: #718096;
+            font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+        }
+        .nav-item.active { color: #FF6B35; }
+        .nav-icon { font-size: 24px; margin-bottom: 4px; }
+        
+        .notification {
+            position: fixed; top: 20px; right: 20px; background: white; border-radius: 12px;
+            padding: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transform: translateX(400px); transition: all 0.3s ease; z-index: 1001;
+        }
+        .notification.show { transform: translateX(0); }
+        
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); display: none; align-items: center;
+            justify-content: center; z-index: 1000;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white; border-radius: 20px; padding: 24px; margin: 20px;
+            max-width: 350px; width: 100%; max-height: 80vh; overflow-y: auto;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-title { font-size: 20px; font-weight: 700; color: #2D3748; }
+        .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #718096; }
+        
+        .track-list { list-style: none; }
+        .track-item {
+            display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #E2E8F0;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .track-item:hover { background: #F7FAFC; border-radius: 8px; padding-left: 8px; }
+        .track-number {
+            width: 32px; height: 32px; background: #F7FAFC; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin-right: 12px;
+            font-size: 14px; font-weight: 600; color: #718096;
+        }
+        .track-info h4 { font-size: 14px; font-weight: 600; color: #2D3748; margin-bottom: 2px; }
+        .track-info p { font-size: 12px; color: #718096; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Motivex</div>
+            <div class="subtitle">Your daily dose of motivation</div>
+        </div>
+        
+        <!-- Home Screen -->
+        <div class="screen active" id="home-screen">
+            <div class="greeting-card" onclick="showGreeting()">
+                <div class="greeting">Hi Samuel! 👋</div>
+                <div class="greeting-subtitle">Ready for your daily boost?</div>
+            </div>
+            
+            <div class="daily-boost">
+                <div class="boost-header">
+                    <div class="category">TODAY'S FOCUS</div>
+                    <div class="quote" id="current-quote">"The only way to do great work is to love what you do."</div>
+                    <div class="author" id="current-author">— Steve Jobs</div>
+                </div>
+                <div class="play-section">
+                    <div class="duration">45 seconds</div>
+                    <button class="play-button" onclick="playCurrentBoost()" id="main-play-btn">
+                        <div class="play-icon">▶</div>
+                        <span>Play Now</span>
+                    </button>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card" onclick="showStreakDetails()">
+                    <div class="stat-value" id="streak-count">7</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-card" onclick="showBoostHistory()">
+                    <div class="stat-value" id="boost-count">45</div>
+                    <div class="stat-label">Total Boosts</div>
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <div class="quick-action" onclick="randomQuote()">
+                    <div class="quick-action-icon">🎲</div>
+                    <div class="quick-action-text">Random Quote</div>
+                </div>
+                <div class="quick-action" onclick="showAchievements()">
+                    <div class="quick-action-icon">🏆</div>
+                    <div class="quick-action-text">Achievements</div>
+                </div>
+                <div class="quick-action" onclick="shareQuote()">
+                    <div class="quick-action-icon">📤</div>
+                    <div class="quick-action-text">Share Quote</div>
+                </div>
+                <div class="quick-action" onclick="setReminder()">
+                    <div class="quick-action-icon">⏰</div>
+                    <div class="quick-action-text">Set Reminder</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Categories</div>
+                <div class="playlist-grid">
+                    <div class="playlist-card" onclick="openPlaylist('focus')" data-category="focus">
+                        <div class="playlist-icon">🎯</div>
+                        <div class="playlist-info">
+                            <h3>Deep Focus</h3>
+                            <p>12 motivational tracks</p>
+                        </div>
+                        <div class="playlist-status">Active</div>
+                    </div>
+                    <div class="playlist-card" onclick="openPlaylist('gym')" data-category="gym">
+                        <div class="playlist-icon">💪</div>
+                        <div class="playlist-info">
+                            <h3>Gym Beast</h3>
+                            <p>8 workout motivations</p>
+                        </div>
+                        <div class="playlist-status">Ready</div>
+                    </div>
+                    <div class="playlist-card" onclick="openPlaylist('study')" data-category="study">
+                        <div class="playlist-icon">📚</div>
+                        <div class="playlist-info">
+                            <h3>Study Power</h3>
+                            <p>15 focus sessions</p>
+                        </div>
+                        <div class="playlist-status">New</div>
+                    </div>
+                    <div class="playlist-card" onclick="openPlaylist('morning')" data-category="morning">
+                        <div class="playlist-icon">☀️</div>
+                        <div class="playlist-info">
+                            <h3>Morning Ritual</h3>
+                            <p>6 morning boosts</p>
+                        </div>
+                        <div class="playlist-status">Popular</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="height: 100px;"></div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchScreen('home')">
+            <div class="nav-icon">🏠</div>
+            <div>Home</div>
+        </div>
+        <div class="nav-item" onclick="switchScreen('explore')">
+            <div class="nav-icon">🧭</div>
+            <div>Explore</div>
+        </div>
+        <div class="nav-item" onclick="switchScreen('profile')">
+            <div class="nav-icon">👤</div>
+            <div>Profile</div>
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal" id="playlist-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-title">Playlist</div>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <ul class="track-list" id="track-list"></ul>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #48BB78, #68D391); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px;">✓</div>
+            <div id="notification-text">Action completed!</div>
+        </div>
+    </div>
+    
+    <script>
+        const quotes = [
+            { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { quote: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+            { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+            { quote: "It is during our darkest moments that we must focus to see the light.", author: "Aristotle" },
+            { quote: "The only impossible journey is the one you never begin.", author: "Tony Robbins" }
+        ];
+        
+        const playlists = {
+            focus: [
+                { title: "Deep Work Flow", duration: "3:45" },
+                { title: "Laser Focus", duration: "2:30" },
+                { title: "Concentration Power", duration: "4:15" },
+                { title: "Mind Clarity", duration: "3:20" }
+            ],
+            gym: [
+                { title: "Beast Mode", duration: "2:45" },
+                { title: "Push Your Limits", duration: "3:10" },
+                { title: "Strength Within", duration: "2:55" },
+                { title: "Never Give Up", duration: "3:30" }
+            ],
+            study: [
+                { title: "Academic Excellence", duration: "4:00" },
+                { title: "Learning Mindset", duration: "3:15" },
+                { title: "Knowledge Quest", duration: "2:40" },
+                { title: "Study Success", duration: "3:45" }
+            ],
+            morning: [
+                { title: "Rise and Shine", duration: "2:20" },
+                { title: "Morning Energy", duration: "3:00" },
+                { title: "New Day Power", duration: "2:45" },
+                { title: "Fresh Start", duration: "3:10" }
+            ]
+        };
+        
+        let isPlaying = false;
+        let currentProgress = 0;
+        
+        function playCurrentBoost() {
+            const btn = document.getElementById('main-play-btn');
+            const icon = btn.querySelector('.play-icon');
+            const text = btn.querySelector('span');
+            const progressFill = document.getElementById('progress-fill');
+            
+            if (!isPlaying) {
+                isPlaying = true;
+                icon.textContent = '⏸';
+                text.textContent = 'Playing...';
+                btn.classList.add('playing');
+                
+                // Simulate progress
+                const interval = setInterval(() => {
+                    currentProgress += 2.22; // 45 seconds = 100%
+                    progressFill.style.width = currentProgress + '%';
+                    
+                    if (currentProgress >= 100) {
+                        clearInterval(interval);
+                        resetPlayer();
+                        showNotification('Daily boost completed! 🎉');
+                        updateStats();
+                    }
+                }, 100);
+                
+                showNotification('Playing daily motivation...');
+            } else {
+                resetPlayer();
+            }
+        }
+        
+        function resetPlayer() {
+            isPlaying = false;
+            currentProgress = 0;
+            const btn = document.getElementById('main-play-btn');
+            const icon = btn.querySelector('.play-icon');
+            const text = btn.querySelector('span');
+            const progressFill = document.getElementById('progress-fill');
+            
+            icon.textContent = '▶';
+            text.textContent = 'Play Now';
+            btn.classList.remove('playing');
+            progressFill.style.width = '0%';
+        }
+        
+        function randomQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const quote = quotes[randomIndex];
+            document.getElementById('current-quote').textContent = `"${quote.quote}"`;
+            document.getElementById('current-author').textContent = `— ${quote.author}`;
+            showNotification('New quote loaded! ✨');
+        }
+        
+        function openPlaylist(category) {
+            const modal = document.getElementById('playlist-modal');
+            const title = document.getElementById('modal-title');
+            const trackList = document.getElementById('track-list');
+            
+            // Set active playlist
+            document.querySelectorAll('.playlist-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`[data-category="${category}"]`).classList.add('active');
+            
+            title.textContent = category.charAt(0).toUpperCase() + category.slice(1) + ' Playlist';
+            trackList.innerHTML = '';
+            
+            playlists[category].forEach((track, index) => {
+                const li = document.createElement('li');
+                li.className = 'track-item';
+                li.onclick = () => playTrack(track.title);
+                li.innerHTML = `
+                    <div class="track-number">${index + 1}</div>
+                    <div class="track-info">
+                        <h4>${track.title}</h4>
+                        <p>${track.duration}</p>
+                    </div>
+                `;
+                trackList.appendChild(li);
+            });
+            
+            modal.classList.add('active');
+            showNotification(`Opened ${category} playlist`);
+        }
+        
+        function playTrack(title) {
+            showNotification(`Playing: ${title} 🎵`);
+            closeModal();
+        }
+        
+        function closeModal() {
+            document.getElementById('playlist-modal').classList.remove('active');
+        }
+        
+        function switchScreen(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(screen + '-screen').classList.add('active');
+            event.target.closest('.nav-item').classList.add('active');
+            
+            showNotification(`Switched to ${screen} screen`);
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notification-text');
+            text.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        function updateStats() {
+            const streakCount = document.getElementById('streak-count');
+            const boostCount = document.getElementById('boost-count');
+            
+            let currentStreak = parseInt(streakCount.textContent);
+            let currentBoosts = parseInt(boostCount.textContent);
+            
+            boostCount.textContent = currentBoosts + 1;
+        }
+        
+        function showGreeting() {
+            showNotification('Welcome back, Samuel! 👋');
+        }
+        
+        function showStreakDetails() {
+            showNotification('7-day streak! Keep it up! 🔥');
+        }
+        
+        function showBoostHistory() {
+            showNotification('45 boosts completed! Amazing! 📈');
+        }
+        
+        function showAchievements() {
+            showNotification('View all achievements 🏆');
+        }
+        
+        function shareQuote() {
+            const quote = document.getElementById('current-quote').textContent;
+            const author = document.getElementById('current-author').textContent;
+            showNotification('Quote copied to clipboard! 📋');
+        }
+        
+        function setReminder() {
+            showNotification('Daily reminder set for 9:00 AM ⏰');
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('playlist-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+        
+        // Initialize app
+        window.addEventListener('load', () => {
+            showNotification('Welcome to Motivex! 🚀');
+        });
+    </script>
+</body>
+</html>
