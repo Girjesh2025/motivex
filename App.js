@@ -6,7 +6,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { View, Text, StyleSheet } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
-import * as Font from 'expo-font';
 
 // Screens
 import { Home } from './screens/Home';
@@ -73,17 +72,8 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       try {
-        // Pre-load fonts, make any API calls you need to do here
-        await Font.loadAsync({
-          'Inter-Regular': require('./assets/fonts/Inter-Regular.ttf'),
-          'Inter-Medium': require('./assets/fonts/Inter-Medium.ttf'),
-          'Inter-SemiBold': require('./assets/fonts/Inter-SemiBold.ttf'),
-          'Inter-Bold': require('./assets/fonts/Inter-Bold.ttf'),
-        });
-
-        // Artificially delay for two seconds to simulate a slow loading
-        // experience. Please remove this if you copy and paste the code!
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // Simulate loading time
+        await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (e) {
         console.warn(e);
       } finally {
