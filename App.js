@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 // Screens
 import { Home } from './screens/Home';
@@ -19,47 +17,58 @@ import { MiniPlayer } from './components/MiniPlayer';
 import { theme } from './lib/theme';
 import { DailyBoost } from './lib/data';
 
-const Tab = createBottomTabNavigator();
+// Simple Custom Tab Navigation
+const CustomTabNavigator = ({ currentBoost, isPlaying, onPlayBoost, activeTab, setActiveTab }) => {
+  const tabs = [
+    { id: 'home', name: 'होम', icon: 'home' },
+    { id: 'explore', name: 'एक्सप्लोर', icon: 'compass' },
+    { id: 'achievements', name: 'उपलब्धि', icon: 'trophy' },
+    { id: 'profile', name: 'प्रोफाइल', icon: 'person' }
+  ];
 
-// Main Tab Navigator
-const TabNavigator = ({ currentBoost, isPlaying, onPlayBoost }) => {
+  const renderScreen = () => {
+    switch (activeTab) {
+      case 'home':
+        return <Home currentBoost={currentBoost} isPlaying={isPlaying} onPlayBoost={onPlayBoost} />;
+      case 'explore':
+        return <Explore />;
+      case 'achievements':
+        return <Achievements />;
+      case 'profile':
+        return <Profile />;
+      default:
+        return <Home currentBoost={currentBoost} isPlaying={isPlaying} onPlayBoost={onPlayBoost} />;
+    }
+  };
+
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.textSecondary,
-        tabBarShowLabel: true,
-        tabBarLabelStyle: styles.tabBarLabel,
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Explore') {
-            iconName = focused ? 'compass' : 'compass-outline';
-          } else if (route.name === 'Achievements') {
-            iconName = focused ? 'trophy' : 'trophy-outline';
-          } else if (route.name === 'Profile') {
-            iconName = focused ? 'person' : 'person-outline';
-          }
-
-          return (
-            <View style={[styles.tabIconContainer, focused && styles.tabIconActive]}>
-              <Ionicons name={iconName} size={size} color={color} />
-            </View>
-          );
-        },
-      })}
-    >
-      <Tab.Screen name="Home">
-        {(props) => <Home {...props} currentBoost={currentBoost} isPlaying={isPlaying} onPlayBoost={onPlayBoost} />}
-      </Tab.Screen>
-      <Tab.Screen name="Explore" component={Explore} />
-      <Tab.Screen name="Achievements" component={Achievements} />
-      <Tab.Screen name="Profile" component={Profile} />
-    </Tab.Navigator>
+    <View style={styles.container}>
+      <View style={styles.screenContainer}>
+        {renderScreen()}
+      </View>
+      
+      <View style={styles.tabBar}>
+        {tabs.map((tab) => (
+          <TouchableOpacity
+            key={tab.id}
+            style={[styles.tabItem, activeTab === tab.id && styles.tabItemActive]}
+            onPress={() => setActiveTab(tab.id)}
+          >
+            <Ionicons 
+              name={activeTab === tab.id ? tab.icon : `${tab.icon}-outline`} 
+              size={24} 
+              color={activeTab === tab.id ? theme.colors.primary : theme.colors.textSecondary} 
+            />
+            <Text style={[
+              styles.tabLabel,
+              activeTab === tab.id && styles.tabLabelActive
+            ]}>
+              {tab.name}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
   );
 };
 
@@ -67,6 +76,7 @@ const TabNavigator = ({ currentBoost, isPlaying, onPlayBoost }) => {
 export default function App() {
   const [currentBoost, setCurrentBoost] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [activeTab, setActiveTab] = useState('home');
 
   const handlePlayBoost = (boost) => {
     setCurrentBoost(boost);
@@ -82,26 +92,24 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
+    <>
       <StatusBar style="light" backgroundColor={theme.colors.primary} />
-      <NavigationContainer>
-        <View style={styles.appContainer}>
-          <TabNavigator 
-            currentBoost={currentBoost}
-            isPlaying={isPlaying}
-            onPlayBoost={handlePlayBoost}
-          />
-          {currentBoost && (
-            <MiniPlayer
-              boost={currentBoost}
-              isPlaying={isPlaying}
-              onPlay={handleResumeBoost}
-              onPause={handlePauseBoost}
-            />
-          )}
-        </View>
-      </NavigationContainer>
-    </View>
+      <CustomTabNavigator 
+        currentBoost={currentBoost}
+        isPlaying={isPlaying}
+        onPlayBoost={handlePlayBoost}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+      {currentBoost && (
+        <MiniPlayer
+          boost={currentBoost}
+          isPlaying={isPlaying}
+          onPlay={handleResumeBoost}
+          onPause={handlePauseBoost}
+        />
+      )}
+    </>
   );
 }
 
@@ -110,10 +118,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
   },
-  appContainer: {
+  screenContainer: {
     flex: 1,
   },
   tabBar: {
+    flexDirection: 'row',
     backgroundColor: theme.colors.surface,
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
@@ -121,16 +130,25 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     height: 80,
   },
-  tabBarLabel: {
-    fontSize: 12,
-    fontFamily: 'Inter-Medium',
-    marginTop: 4,
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
   },
-  tabIconContainer: {
-    padding: 8,
+  tabItemActive: {
+    backgroundColor: `${theme.colors.primary}10`,
     borderRadius: 12,
+    marginHorizontal: 4,
   },
-  tabIconActive: {
-    backgroundColor: `${theme.colors.primary}20`,
+  tabLabel: {
+    fontSize: 12,
+    color: theme.colors.textSecondary,
+    marginTop: 4,
+    fontWeight: '500',
+  },
+  tabLabelActive: {
+    color: theme.colors.primary,
+    fontWeight: '600',
   },
 });
