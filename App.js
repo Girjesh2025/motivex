@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { View, Text, StyleSheet } from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
 
 // Screens
 import { Home } from './screens/Home';
@@ -18,9 +17,6 @@ import { MiniPlayer } from './components/MiniPlayer';
 // Theme and data
 import { theme } from './lib/theme';
 import { DailyBoost } from './lib/data';
-
-// Keep the splash screen visible while we fetch resources
-SplashScreen.preventAutoHideAsync();
 
 const Tab = createBottomTabNavigator();
 
@@ -65,36 +61,8 @@ const TabNavigator = ({ currentBoost, isPlaying, onPlayBoost }) => {
 
 // Main App Component
 export default function App() {
-  const [appIsReady, setAppIsReady] = useState(false);
   const [currentBoost, setCurrentBoost] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-
-  useEffect(() => {
-    async function prepare() {
-      try {
-        // Simulate loading time
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        // Tell the application to render
-        setAppIsReady(true);
-      }
-    }
-
-    prepare();
-  }, []);
-
-  const onLayoutRootView = React.useCallback(async () => {
-    if (appIsReady) {
-      // This tells the splash screen to hide immediately! If we call this after
-      // `setAppIsReady`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has actually been
-      // laid out.
-      await SplashScreen.hideAsync();
-    }
-  }, [appIsReady]);
 
   const handlePlayBoost = (boost) => {
     setCurrentBoost(boost);
@@ -109,22 +77,8 @@ export default function App() {
     setIsPlaying(true);
   };
 
-  if (!appIsReady) {
-    return (
-      <LinearGradient
-        colors={[theme.colors.primary, theme.colors.secondary]}
-        style={styles.splashContainer}
-      >
-        <View style={styles.splashContent}>
-          <Text style={styles.splashTitle}>MotiveX</Text>
-          <Text style={styles.splashSubtitle}>Boost Your Day</Text>
-        </View>
-      </LinearGradient>
-    );
-  }
-
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
+    <View style={styles.container}>
       <StatusBar style="light" backgroundColor={theme.colors.primary} />
       <NavigationContainer>
         <View style={styles.appContainer}>
@@ -154,26 +108,6 @@ const styles = StyleSheet.create({
   },
   appContainer: {
     flex: 1,
-  },
-  splashContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  splashContent: {
-    alignItems: 'center',
-  },
-  splashTitle: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 8,
-    fontFamily: 'Inter-Bold',
-  },
-  splashSubtitle: {
-    fontSize: 18,
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontFamily: 'Inter-Regular',
   },
   tabBar: {
     backgroundColor: theme.colors.surface,
